@@ -39,28 +39,65 @@ set -e
 
 if [ "$1" == "check" ]; then
 	# check for required tools
+	code=0
+
 	echo -n "Checking for 'tar'..."
-	tar --version > /dev/null 2>&1 && echo 'OK!'
+	if tar --version > /dev/null 2>&1; then
+		echo 'OK!'
+	else
+		echo 'NOT FOUND!';
+		code=1;
+	fi
 
 	echo -n "Checking for 'gpg'..."
-	gpg -h > /dev/null 2>&1 && echo 'OK!'
+	if gpg -h > /dev/null 2>&1; then
+		echo 'OK!'
+	else
+		echo 'NOT FOUND!';
+		code=1;
+	fi
 
 	echo -n "Checking for 'xz'..."
-	xz --version > /dev/null 2>&1 && echo 'OK!'
+	if xz --version > /dev/null 2>&1; then
+		echo 'OK!'
+	else
+		echo 'NOT FOUND!';
+		code=1;
+	fi
 
 	echo -n "Checking for 'gzip'..."
-	gzip --version > /dev/null 2>&1 && echo 'OK!'
+	if gzip --version > /dev/null 2>&1; then
+		echo 'OK!'
+	else
+		echo 'NOT FOUND!';
+		code=1;
+	fi
 
 	echo -n "Checking for 'bzip2'..."
-	bzip2 --version > /dev/null 2>&1 && echo 'OK!'
+	if bzip2 --version > /dev/null 2>&1; then
+		echo 'OK!'
+	else
+		echo 'NOT FOUND!';
+		code=1;
+	fi
 
 	echo -n "Checking for 'snzip'..."
-	snzip -h > /dev/null 2>&1 && echo 'OK!'
+	if snzip -h > /dev/null 2>&1; then
+		echo 'OK!'
+	else
+		echo 'NOT FOUND!';
+		code=1;
+	fi
 
 	echo -n "Checking for 'lz4'..."
-	lz4 -V > /dev/null 2>&1 && echo 'OK!'
+	if lz4 -V > /dev/null 2>&1; then
+		echo 'OK!'
+	else
+		echo 'NOT FOUND!';
+		code=1;
+	fi
 
-	exit 0
+	exit $code
 fi
 
 
@@ -104,7 +141,7 @@ if [ $cipher -eq 1 ]; then
 fi
 
 
-# get directory's path of file/folder
+# get file directory's path
 directory=$(dirname "$filename")
 # get input file/folder name
 input_filename=$(basename "$filename")
