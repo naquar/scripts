@@ -3,9 +3,9 @@
 # --- This (Bash) script hashes ALL FILES in current directory and output hashes to text file.
 # ---
 # --- Usage: script.sh <hash_algo>
-# --- 	Possible values for 'hash_algo': MD5, SHA1, SHA224, SHA256, SHA384, SHA512
+# --- 	Possible values for 'hash_algo': MD5, SHA1, SHA224, SHA256, SHA384, SHA512, BLAKE2
 # ---
-# --- Tools needed: tr, find, md5sum, sha1sum, sha224sum, sha256sum, sha384sum, sha512sum
+# --- Tools needed: tr, find, md5sum, sha1sum, sha224sum, sha256sum, sha384sum, sha512sum, b2sum
 # ---
 # ---
 # --- This script is available under the MIT License (MIT).
@@ -103,6 +103,14 @@ if [ "$1" == "check" ]; then
 		code=1;
 	fi
 
+	echo -n "Checking for 'b2sum'..."
+	if b2sum --version > /dev/null 2>&1; then
+		echo 'OK!'
+	else
+		echo 'NOT FOUND!';
+		code=1;
+	fi
+
 	exit $code
 fi
 
@@ -111,7 +119,7 @@ fi
 if [ $# -eq 0 ]; then
 	echo -e 'Usage:'
 	echo -e '\tscript.sh <hash_algo>\n'
-	echo -e "\t\tPossible values for 'hash_algo': MD5, SHA1, SHA224, SHA256, SHA384, SHA512\n"
+	echo -e "\t\tPossible values for 'hash_algo': MD5, SHA1, SHA224, SHA256, SHA384, SHA512, BLAKE2\n"
 
 	echo -e '\tExample: script.sh SHA256\n'
 
@@ -124,9 +132,14 @@ fi
 hash_tool=$(echo "$1" | tr 'A-Z' 'a-z')
 
 if [ "$hash_tool" != 'md5' ] && [ "$hash_tool" != 'sha1' ] && [ "$hash_tool" != 'sha224' ] && [ "$hash_tool" != 'sha256' ] && [ "$hash_tool" != 'sha384' ] && [ "$hash_tool" != 'sha512' ] ; then
-  echo 'Invalid hash tool.'
+	if [ "$hash_tool" != 'blake2' ]; then
+		echo 'Invalid hash tool.'
 
-  exit 2
+		exit 2
+	else
+		# hash tool for BLAKE2 is 'b2sum'
+		hash_tool='b2'
+	fi
 fi
 
 hash_tool=$hash_tool'sum'
